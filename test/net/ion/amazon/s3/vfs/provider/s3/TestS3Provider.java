@@ -10,7 +10,6 @@ import java.util.Random;
 import junit.framework.Assert;
 import junit.framework.TestCase;
 import net.ion.amazon.AmzClientModule;
-import net.ion.amazon.common.Credential;
 import net.ion.amazon.s3.vfs.provider.S3FileProvider;
 import net.ion.framework.vfs.FileSystemEntry;
 import net.ion.framework.vfs.VFS;
@@ -23,8 +22,6 @@ import org.apache.commons.vfs2.Selectors;
 import org.apache.commons.vfs2.provider.url.UrlFileProvider;
 
 public class TestS3Provider extends TestCase {
-
-	private static final String BACKUP_ZIP = "test/resource/backup.zip";
 
 	private FileSystemEntry fsEntry;
 
