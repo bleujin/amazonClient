@@ -27,6 +27,14 @@ public class AmzClientModule extends AbstractModule{
 		return new AmzClientModule("AKIAJSJZTYEK3S4OBNIA", "ch6VVYIOEQPTO+DkEyxJd8UHOdre/R5jlHnVZKo5") ;
 	}
 	
+	public String accessKey(){
+		return accessKey ;
+	}
+	
+	public String secretKey(){
+		return secretKey ;
+	}
+	
 	public final static Injector testInjector(){
 		return Guice.createInjector(test()) ;
 	}

@@ -5,12 +5,17 @@ import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.List;
 import java.util.Map;
+import java.util.concurrent.Callable;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
+import java.util.concurrent.TimeUnit;
 
 import junit.framework.TestCase;
 import net.ion.amazon.AmzClientModule;
 import net.ion.amazon.common.Credential;
 import net.ion.amazon.common.ServiceRegion;
 import net.ion.framework.util.Debug;
+import net.ion.framework.util.InfinityThread;
 import net.ion.framework.util.ListUtil;
 
 import com.amazonaws.services.sqs.model.Message;
@@ -51,7 +56,8 @@ public class TestSQSClient extends TestCase {
 	public void testSendMessage() throws Exception {
 		SendMessageResult result = sendMessage(1) ;
 		assertEquals(true, result != null) ;
-		client.popMessage() ;
+		List<Message> msg  = client.popMessage() ;
+		Debug.line(msg) ;
 	}
 	
 	public void testShowAttribute() throws Exception{
@@ -93,6 +99,24 @@ public class TestSQSClient extends TestCase {
 	}
 	
 	
+	public void testSpeed() throws Exception {
+		ExecutorService es = Executors.newCachedThreadPool() ;
+		final TestSQSClient self = new TestSQSClient() ;
+		self.setUp() ;
+		for (int i = 0; i < 10 ; i++) {
+			es.submit(new Callable<Integer>() {
+				public Integer call() throws Exception {
+					self.sendMessage(10) ;
+					Debug.line(new Date()) ;
+					return 1000;
+				}
+			}) ;
+		}
+		new InfinityThread().startNJoin() ;
+	}
 	
+	public void testSpeedGet() throws Exception {
+		
+	}
 
 }
