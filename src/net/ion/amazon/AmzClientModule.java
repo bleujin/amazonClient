@@ -1,5 +1,10 @@
 package net.ion.amazon;
 
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+import java.io.IOException;
+import java.util.Properties;
+
 import net.ion.amazon.common.ServiceRegion;
 import net.ion.amazon.s3.vfs.provider.S3FileProvider;
 import net.ion.amazon.s3.vfs.provider.operations.S3FileOperationsProvider;
@@ -23,8 +28,10 @@ public class AmzClientModule extends AbstractModule{
 		this.secretKey = secretKey ;
 	}
 	
-	public final static AmzClientModule test(){
-		return new AmzClientModule("AKIAJSJZTYEK3S4OBNIA", "ch6VVYIOEQPTO+DkEyxJd8UHOdre/R5jlHnVZKo5") ;
+	public final static AmzClientModule test() throws FileNotFoundException, IOException{
+		Properties props = new Properties() ;
+		props.load(new FileInputStream("resource/AwsCredentials.properties")) ;
+		return new AmzClientModule(props.getProperty("accessKey"), props.getProperty("secretKey")) ;
 	}
 	
 	public String accessKey(){
@@ -35,7 +42,7 @@ public class AmzClientModule extends AbstractModule{
 		return secretKey ;
 	}
 	
-	public final static Injector testInjector(){
+	public final static Injector testInjector() throws FileNotFoundException, IOException{
 		return Guice.createInjector(test()) ;
 	}
 	

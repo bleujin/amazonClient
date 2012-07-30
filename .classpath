@@ -12,5 +12,6 @@
 	<classpathentry kind="lib" path="lib/javax.inject.jar"/>
 	<classpathentry kind="lib" path="lib/aopalliance.jar"/>
 	<classpathentry combineaccessrules="false" kind="src" path="/IFramework"/>
+	<classpathentry combineaccessrules="false" kind="src" path="/AradonClient"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>

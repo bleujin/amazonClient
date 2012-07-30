@@ -8,6 +8,7 @@ import java.util.Map;
 import java.util.concurrent.Callable;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
+import java.util.concurrent.Future;
 import java.util.concurrent.TimeUnit;
 
 import junit.framework.TestCase;
@@ -17,6 +18,8 @@ import net.ion.amazon.common.ServiceRegion;
 import net.ion.framework.util.Debug;
 import net.ion.framework.util.InfinityThread;
 import net.ion.framework.util.ListUtil;
+import net.ion.radon.aclient.NewClient;
+import net.ion.radon.aclient.Response;
 
 import com.amazonaws.services.sqs.model.Message;
 import com.amazonaws.services.sqs.model.SendMessageResult;
@@ -101,13 +104,16 @@ public class TestSQSClient extends TestCase {
 	
 	public void testSpeed() throws Exception {
 		ExecutorService es = Executors.newCachedThreadPool() ;
-		final TestSQSClient self = new TestSQSClient() ;
-		self.setUp() ;
 		for (int i = 0; i < 10 ; i++) {
 			es.submit(new Callable<Integer>() {
 				public Integer call() throws Exception {
-					self.sendMessage(10) ;
-					Debug.line(new Date()) ;
+					long start = System.currentTimeMillis() ;
+					for (int j = 0; j < 100 ; j++) {
+						client.sendMessage("a random message sent at " + new Date().toGMTString()) ;
+						client.receiveMessage() ;
+					}
+					
+					Debug.line(System.currentTimeMillis() - start,  new Date()) ;
 					return 1000;
 				}
 			}) ;
@@ -115,8 +121,17 @@ public class TestSQSClient extends TestCase {
 		new InfinityThread().startNJoin() ;
 	}
 	
-	public void testSpeedGet() throws Exception {
+	public void testAradonCall() throws Exception {
+		NewClient nc = NewClient.create() ;
 		
+		List<Future> list = ListUtil.newList() ;
+		for (int i = 0; i < 100; i++) {
+			list.add(nc.prepareGet("http://ec2-175-41-225-160.ap-northeast-1.compute.amazonaws.com:9000").execute()) ;
+		}
+		for (Future fut : list) {
+			fut.get() ;
+		}
+		nc.close() ;
 	}
 
 }
